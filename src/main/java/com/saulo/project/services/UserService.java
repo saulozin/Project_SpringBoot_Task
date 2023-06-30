@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.saulo.project.entities.User;
 import com.saulo.project.repositories.UserRepository;
+import com.saulo.project.services.exceptions.ResourceNotFoundException;
 
 //Anotation para registrar a classe no mecanismo de injeção de dependência.
 @Service
@@ -22,7 +23,7 @@ public class UserService {
 	
 	public User findById(Long id) {
 		Optional<User> obj = userRepo.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
 	public User insert(User obj) {
