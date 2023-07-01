@@ -13,6 +13,8 @@ import com.saulo.project.repositories.TaskRepository;
 import com.saulo.project.services.exceptions.DatabaseException;
 import com.saulo.project.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 //Anotation para registrar a classe no mecanismo de injeção de dependência.
 @Service
 public class TaskService {
@@ -44,9 +46,13 @@ public class TaskService {
 	}
 	
 	public Task update(Long id, Task obj) {
-		Task entity = taskRepo.getReferenceById(id);
-		updateData(entity, obj);
-		return taskRepo.save(entity);
+		try {
+			Task entity = taskRepo.getReferenceById(id);
+			updateData(entity, obj);
+			return taskRepo.save(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 	
 	private void updateData(Task entity, Task obj) {
